@@ -97,6 +97,7 @@ class YJNumber(YJsonItem):
            text[0] != '.'):
             return YJNumber(s_ope + int_part), text
 
+        # float
         text = text[1:] # remove dot
         float_part = ''
         while len(text) > 0 and text[0] in numbers:
@@ -112,6 +113,30 @@ class YJNumber(YJsonItem):
 
 class YJBool(YJsonItem):
     """ Boolean format with YJsonItem """
+    def __init__(self, text):
+        self._cond = None
+        self._build_cond(text)
+
+    def _build_cond(self, text):
+        if text == 'True':
+            self._cond = True
+        elif text == 'False':
+            self._build_cond = False
+        else:
+            raise TypeError('YJBool build error')
+
+    def get_data(self):
+        return self._cond
+
+    def parse_with_next(text):
+        if text.startswith('True'):
+            return YJBool('True'), text[len('True'): ]
+        elif text.startswith('False'):
+            return YJBool('False'), text[len('False'):]
+        return None
+
+    def __repr__(self):
+        return 'YJBool<{}>'.format(self._cond)
 
 class YJList(YJsonItem):
     """ List format with YJsonItem """
@@ -145,6 +170,18 @@ def yjnumber_test():
 
     text = '-13.25abc'
     print(YJNumber.parse_with_next(text))
+
+def yjbool_test():
+    text = 'Trueabc'
+    print(YJBool.parse_with_next(text))
+    text = 'Falseabc'
+    print(YJBool.parse_with_next(text))
+    text = 'aTrue'
+    print(YJBool.parse_with_next(text))
+    text = 'bFalse'
+    print(YJBool.parse_with_next(text))
+    text = 'condition'
+    print(YJBool.parse_with_next(text))
     
 
-yjnumber_test()
+yjbool_test()
