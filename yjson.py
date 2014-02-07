@@ -29,9 +29,7 @@ class YJsonItem:
 class YJString(YJsonItem):
     """ String format with YJsonItem """
     def __init__(self, text):
-        if len(text) < 2 or text[0] != '"' or text[-1] != '"':
-            raise TypeError()
-        self._text = text[1:-1]
+        self._text = text
     
     def get_data(self):
         return self._text
@@ -51,19 +49,9 @@ class YJString(YJsonItem):
 
 class YJNumber(YJsonItem):
     """ Number format widht YJsonItem """
-    def __init__(self, text):
-        self._num = None
-        self._build_num(text)   # todo: define this method
+    def __init__(self, num):
+        self._num = num
 
-    def _build_num(self, text):
-        """
-        assume that text format is llegal
-        """
-        print('building number')
-        if '.' in text:     # -> float(have dot)
-            self._num = float(text)
-        else:               # -> integer(not have dot)
-            self._num = int(text)
 
     def get_data(self):
         return self._num
@@ -95,7 +83,8 @@ class YJNumber(YJsonItem):
         
         if len(text) == 0 or (  # integer
            text[0] != '.'):
-            return YJNumber(s_ope + int_part), text
+            num = int(s_ope + int_part)
+            return YJNumber(num), text
 
         # float
         text = text[1:] # remove dot
@@ -103,36 +92,27 @@ class YJNumber(YJsonItem):
         while len(text) > 0 and text[0] in numbers:
             float_part += text[0]
             text = text[1:]
+        num = float(s_ope + int_part + '.' + float_part)
 
-        return YJNumber(s_ope + int_part + '.' + float_part), text
+        return YJNumber(num), text
 
 
     def __repr__(self):
         return 'YJNumber<{}>'.format(self._num)
 
-
 class YJBool(YJsonItem):
     """ Boolean format with YJsonItem """
-    def __init__(self, text):
-        self._cond = None
-        self._build_cond(text)
-
-    def _build_cond(self, text):
-        if text == 'True':
-            self._cond = True
-        elif text == 'False':
-            self._build_cond = False
-        else:
-            raise TypeError('YJBool build error')
+    def __init__(self, cond):
+        self._cond = cond
 
     def get_data(self):
         return self._cond
 
     def parse_with_next(text):
         if text.startswith('True'):
-            return YJBool('True'), text[len('True'): ]
+            return YJBool(True), text[len('True'): ]
         elif text.startswith('False'):
-            return YJBool('False'), text[len('False'):]
+            return YJBool(False), text[len('False'):]
         return None
 
     def __repr__(self):
@@ -145,6 +125,7 @@ class YJObject(YJsonItem):
     """ Object format with YJsonItem """
 
 
+# tests
 def yjstring_test():
     print('yjstring test ====== ')
     text = '"abcdef"'
