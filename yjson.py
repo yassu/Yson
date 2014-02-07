@@ -55,12 +55,56 @@ class YJNumber(YJsonItem):
         self._num = None
         self._build_num(text)   # todo: define this method
 
+    def _build_num(self, text):
+        """
+        assume that text format is llegal
+        """
+        print('building number')
+        if '.' in text:     # -> float(have dot)
+            self._num = float(text)
+        else:               # -> integer(not have dot)
+            self._num = int(text)
+
     def get_data(self):
         return self._num
 
     @staticmethod
-    def parse_with_next(text):  # todo: define this method
-        pass
+    def parse_with_next(text):
+        numbers = list(map(str, (0,1,2,3,4,5,6,7,8,9)))
+        opes = ('+', '-')
+
+        if text[0] not in numbers and text[0] not in opes:
+            return None
+        
+        first_ope = False
+        s_ope = ''
+        if text[0] == '+':
+            s_ope = '+'
+            first_ope = True
+        elif text[0] == '-':
+            s_ope = '-'
+            first_ope = True
+
+        if first_ope:
+            text = text[1:]
+        
+        int_part = ''
+        while len(text) > 0 and text[0] in numbers:
+            int_part += text[0]
+            text = text[1:]
+        
+        if len(text) == 0 or (  # integer
+           text[0] != '.'):
+            return YJNumber(s_ope + int_part), text
+
+        text = text[1:] # remove dot
+        float_part = ''
+        while len(text) > 0 and text[0] in numbers:
+            float_part += text[0]
+            text = text[1:]
+
+        return YJNumber(s_ope + int_part + '.' + float_part), text
+
 
     def __repr__(self):
         return 'YJNumber<{}>'.format(self._num)
@@ -71,6 +115,9 @@ class YJBool(YJsonItem):
 
 class YJList(YJsonItem):
     """ List format with YJsonItem """
+
+class YJObject(YJsonItem):
+    """ Object format with YJsonItem """
 
 
 def yjstring_test():
@@ -86,4 +133,18 @@ def yjstring_test():
     print('YJString.parse_with_next method returns {}.'.format(
             YJString.parse_with_next(text)))    # -> Error
 
-yjstring_test()
+def yjnumber_test():
+    text = '13abc'
+    print(YJNumber.parse_with_next(text))
+
+    text = '+13abc'
+    print(YJNumber.parse_with_next(text))
+
+    text = '13.25abc'
+    print(YJNumber.parse_with_next(text))
+
+    text = '-13.25abc'
+    print(YJNumber.parse_with_next(text))
+    
+
+yjnumber_test()
