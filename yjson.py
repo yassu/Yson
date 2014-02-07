@@ -51,6 +51,20 @@ class YJString(YJsonItem):
 
 class YJNumber(YJsonItem):
     """ Number format widht YJsonItem """
+    def __init__(self, text):
+        self._num = None
+        self._build_num(text)   # todo: define this method
+
+    def get_data(self):
+        return self._num
+
+    @staticmethod
+    def parse_with_next(text):  # todo: define this method
+        pass
+
+    def __repr__(self):
+        return 'YJNumber<{}>'.format(self._num)
+
 
 class YJBool(YJsonItem):
     """ Boolean format with YJsonItem """
