@@ -42,7 +42,7 @@ class YJString(YJsonItem):
             return None
 
         sep_ind = 1 + text[1:].find('"')
-        obj = YJString(text[:sep_ind])
+        obj = YJString('"' + text[:sep_ind + 1])
         text = text[:sep_ind]
         return obj, text
 
