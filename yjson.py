@@ -1,4 +1,5 @@
 #!/usr/bin/env python3 
+from base import except_first_spaces
 
 
 __all__ = ['load_from_text', 'load']
@@ -46,6 +47,7 @@ class YJString(YJsonItem):
 
     def __repr__(self):
         return 'YJString<{}>'.format(self._text)
+
 
 class YJNumber(YJsonItem):
     """ Number format widht YJsonItem """
@@ -100,6 +102,7 @@ class YJNumber(YJsonItem):
     def __repr__(self):
         return 'YJNumber<{}>'.format(self._num)
 
+
 class YJBool(YJsonItem):
     """ Boolean format with YJsonItem """
     def __init__(self, cond):
@@ -120,9 +123,48 @@ class YJBool(YJsonItem):
 
 class YJList(YJsonItem):
     """ List format with YJsonItem """
+    def __init__(self, array):
+        self._array = list(filter(lambda obj:obj is not None, array))   # remove None member
+    
+    def get_data(self):
+        return self._array
+
+    @staticmethod
+    def parse_with_next(text):  #todo: adjust for without white space
+        array = []
+
+        if text[0] != '[':
+            return None
+        text = text[1:]
+        while text != '':
+            text = except_first_spaces(text)
+            defined = False
+            for jitem in all_yjitems:
+                obj = jitem.parse_with_next(text)  
+                if obj is not None:
+                    obj,text = obj
+                    defined = True
+                    break
+            array.append(obj)
+            if text == '':
+                return YJList(array), ''
+
+            if text[0] == ',':
+                text = text[1:]
+            if text[0] == ']':
+                text = text[1:]
+
+            if defined is False:
+                break
+        return YJList(array), text
+
+    def __repr__(self):
+        return 'YJList<{}>'.format(self._array)
 
 class YJObject(YJsonItem):
     """ Object format with YJsonItem """
+
+all_yjitems = (YJString, YJNumber, YJBool, YJList)
 
 
 # tests
@@ -163,6 +205,12 @@ def yjbool_test():
     print(YJBool.parse_with_next(text))
     text = 'condition'
     print(YJBool.parse_with_next(text))
+
+def yjlist_test():  
+    text = "[123,243,351]"
+    print(YJList.parse_with_next(text))
+    text = "[123, [243, 234],351, 123]"
+    print(YJList.parse_with_next(text))
     
 
-yjbool_test()
+yjlist_test()
