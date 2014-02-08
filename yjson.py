@@ -16,9 +16,11 @@ def load(f):
     output: python buildin structure
     """
 
-def parse_with_next(text):
+def parse_with_next(text, appendable_objs=[]):
+    numbers_obj = tuple(list(all_yjitems) + list(appendable_objs))
+
     defined = False
-    for jitem in all_yjitems:
+    for jitem in numbers_obj:
         obj = jitem.parse_with_next(text)
         if obj is not None:
             obj, text = obj
@@ -77,10 +79,10 @@ class YJNumber(YJsonItem):
         numbers = list(map(str, (0,1,2,3,4,5,6,7,8,9)))
         opes = ('+', '-')
 
-        if text != '':
+        if text == '':
             return None
 
-        if text[0] not in numbers and text[0] not in opes:
+        if text[0] not in numbers + list(opes):
             return None
         
         first_ope = False
@@ -92,7 +94,7 @@ class YJNumber(YJsonItem):
             s_ope = '-'
             first_ope = True
 
-        if first_ope:
+        if first_ope is '':
             text = text[1:]
         
         int_part = ''
@@ -103,6 +105,7 @@ class YJNumber(YJsonItem):
         if len(text) == 0 or (  # integer
            text[0] != '.'):
             num = int(s_ope + int_part)
+            print(num)
             return YJNumber(num), text
 
         # float
@@ -157,16 +160,15 @@ class YJList(YJsonItem):
         while text != '':
             text = except_first_spaces(text)
             defined = False
-            for jitem in all_yjitems:
-                obj = jitem.parse_with_next(text)  
-                if obj is not None:
-                    obj,text = obj
-                    defined = True
-                    break
-            array.append(obj)
+            obj = parse_with_next(text)
+            if obj is not None:
+                obj,text = obj
+                defined = True
+                array.append(obj)
             if text == '':
                 return YJList(array), ''
 
+            text = except_first_spaces(text)
             if text[0] == ',':
                 text = text[1:]
             if text[0] == ']':
@@ -179,28 +181,85 @@ class YJList(YJsonItem):
     def __repr__(self):
         return 'YJList<{}>'.format(self._array)
 
-#class YJObject(YJsonItem): # todo: until
-#    """ Object format with YJsonItem """
-#    def __init__(self, d):
-#        self._d = d
-#
-#    def get_data(self):
-#        return self._d
-#
-#    @staticmethod
-#    def parse_with_next(text):  #todo: without white space(until)
-#        if text[0] != '{':
-#            return None
-#        pass
-#
-#    
-#    def __repr__(self):
-#        return 'YJObject<{}>'.format(self._d)
-#                    
-#            
+class YJPair(YJsonItem):
+    """
+    You shouldn't assginment directly.
+    """
+    def __init__(self, key, value):
+        self._key = key     # assume that len(self._d) == 1
+        self._value = value
+
+    def get_data(self):
+        return {self._key: self._value}
+
+    @staticmethod
+    def parse_with_next(text, appendable_objs=[]):
+        print(text)
+        text = except_first_spaces(text)
+        d = {}
+        key_obj = parse_with_next(text, appendable_objs=appendable_objs)
+        if key_obj is not None:
+            key_obj, text = key_obj
+
+        if text[0] == ':':
+            text = text[1:]
+            text = except_first_spaces(text)
+        else:
+            print('Case A:.text: {}'.format(text))
+            return None
+
+        value_item,text = parse_with_next(text, appendable_objs=appendable_objs)
+        print(value_item)
+        text = except_first_spaces(text)
+
+        return YJPair(key_obj, value_item), text
+    
+    def __repr__(self):
+        return 'YJPair{}'.format({self._key: self._value})
         
 
-all_yjitems = (YJString, YJNumber, YJBool, YJList,)
+class YJObject(YJsonItem): # todo: until
+    """ Object format with YJsonItem """
+    def __init__(self, d):
+        self._d = d
+
+    def get_data(self):
+        return self._d
+
+    @staticmethod
+    def parse_with_next(text):  #todo: without white space(until)
+        if text[0] != '{':
+            return None
+        d={}
+        text = text[1:]
+        
+        while text != '':
+            print("t")
+            print(text)
+            pair_obj, text = YJPair.parse_with_next(text)
+            #if pair_obj is not None:
+            #    pair_obj, text = pair_obj
+            print(text)
+            key_obj, value_obj = list(pair_obj.get_data().items())[0]
+            d[key_obj] = value_obj
+            
+            if text == '':
+                break
+            if text[0] == ',':
+                text = text[1:]
+            if text[0] == '}':
+                text = text[1:]
+                break
+        return YJObject(d), text
+        
+            
+    def __repr__(self):
+        return 'YJObject<{}>'.format(self._d)
+                    
+            
+        
+
+all_yjitems = (YJString, YJNumber, YJBool, YJList, YJObject)
 
 
 # tests
@@ -250,10 +309,16 @@ def yjlist_test():
     text = "[123, [243, 234],351, 123,]"
     print(YJList.parse_with_next(text))
 
-def yjobj_test():   # until
+def yjpair_test():
+    text = '1:2'
+    print(YJPair.parse_with_next(text))
+    text = '[1, 2, 3]: [[1, 2, 3,], [5, 7, 9,], [11, 13, 15]]'
+    print(YJPair.parse_with_next(text))
+
+def yjobj_test():   
     text = '{1:2,3:4}'
     print(YJObject.parse_with_next(text))
-    text = '{1:2,3:4,{5:6,{7:8}}}'
+    text = '{1:2,3:4,7:{5:6,10:7}}'
     print(YJObject.parse_with_next(text))
     
 
