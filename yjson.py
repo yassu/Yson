@@ -16,6 +16,20 @@ def load(f):
     output: python buildin structure
     """
 
+def parse_with_next(text):
+    defined = False
+    for jitem in all_yjitems:
+        obj = jitem.parse_with_next(text)
+        if obj is not None:
+            obj, text = obj
+            defined = True
+            break
+
+    if defined is True:
+        return obj, text
+    else:
+        return None
+
 class YJsonItem:
     def get_data(self):
         """ return data which this object sgin """
@@ -62,6 +76,9 @@ class YJNumber(YJsonItem):
     def parse_with_next(text):
         numbers = list(map(str, (0,1,2,3,4,5,6,7,8,9)))
         opes = ('+', '-')
+
+        if text != '':
+            return None
 
         if text[0] not in numbers and text[0] not in opes:
             return None
@@ -121,6 +138,7 @@ class YJBool(YJsonItem):
     def __repr__(self):
         return 'YJBool<{}>'.format(self._cond)
 
+
 class YJList(YJsonItem):
     """ List format with YJsonItem """
     def __init__(self, array):
@@ -130,7 +148,7 @@ class YJList(YJsonItem):
         return self._array
 
     @staticmethod
-    def parse_with_next(text):  #todo: adjust for without white space
+    def parse_with_next(text):  
         array = []
 
         if text[0] != '[':
@@ -161,10 +179,28 @@ class YJList(YJsonItem):
     def __repr__(self):
         return 'YJList<{}>'.format(self._array)
 
-class YJObject(YJsonItem):
-    """ Object format with YJsonItem """
+#class YJObject(YJsonItem): # todo: until
+#    """ Object format with YJsonItem """
+#    def __init__(self, d):
+#        self._d = d
+#
+#    def get_data(self):
+#        return self._d
+#
+#    @staticmethod
+#    def parse_with_next(text):  #todo: without white space(until)
+#        if text[0] != '{':
+#            return None
+#        pass
+#
+#    
+#    def __repr__(self):
+#        return 'YJObject<{}>'.format(self._d)
+#                    
+#            
+        
 
-all_yjitems = (YJString, YJNumber, YJBool, YJList)
+all_yjitems = (YJString, YJNumber, YJBool, YJList,)
 
 
 # tests
@@ -211,6 +247,14 @@ def yjlist_test():
     print(YJList.parse_with_next(text))
     text = "[123, [243, 234],351, 123]"
     print(YJList.parse_with_next(text))
+    text = "[123, [243, 234],351, 123,]"
+    print(YJList.parse_with_next(text))
+
+def yjobj_test():   # until
+    text = '{1:2,3:4}'
+    print(YJObject.parse_with_next(text))
+    text = '{1:2,3:4,{5:6,{7:8}}}'
+    print(YJObject.parse_with_next(text))
     
 
-yjlist_test()
+yjobj_test()
