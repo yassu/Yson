@@ -5,7 +5,6 @@
 ## Ver 0
 
 * use comment
-* save data in file
 * readme
 * document
 
