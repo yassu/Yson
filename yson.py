@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from base import except_first_spaces
+from json import dump   as _json_dump
 
 
 __all__ = ['load_from_text', 'load']
@@ -48,6 +49,12 @@ def load(f):
     """
     text = f.read()
     return load_from_text(text)
+
+def dumps(buildin_obj, f, sort_keys=True, indent=4):
+    """
+    save buildin_obj in f, whcih is file object
+    """
+    _json_dump(buildin_obj, f, sort_keys=sort_keys, indent=indent)
 
 
 def obtain_buildin(yobj):
@@ -416,3 +423,13 @@ def load_from_text_test():
 
     text = '[1,2,3,{4:[5,6]}]'
     print(load_from_text(text))
+
+def dump_test():
+    text='[1,2,[3,4,5]]'
+    filename = 'dump.test'
+    ydata = load_from_text(text)
+    print(ydata)
+    with open(filename, 'w') as f:
+        dumps(ydata, f)
+
+dump_test()
