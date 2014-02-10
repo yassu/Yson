@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
-from base import except_first_spaces
+from base import except_first_spaces, obtain_suitable_comment
 from json import dump   as _json_dump
 
 
 __all__ = ['load_from_text', 'load']
 
 
-def load_from_text(text):
+def load_from_text(text, comment_reg=None):
     """
-    input : text with YJson format
+    input : text with YJson format and ignore regrex(called comment)
     output: python buildin structure
-
-    very simple.
-    i.e. without comment and
     """
     for dummy in ('\t', '\r', '\n'):
         text = text.replace(dummy, ' ')
+
+    if comment_reg is not None:
+        text = obtain_suitable_comment(text, comment_reg)
 
     # print('text: {}'.format(text))
     obj, text = parse_with_next(text)
@@ -96,7 +96,6 @@ def parse_with_next(text, appendable_objs=[]):
         return obj, text
     else:
         return None
-
 
 class YJsonItem:
 
