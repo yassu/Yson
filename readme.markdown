@@ -7,13 +7,12 @@ Author is yassu on gitHub.
 * Define Data Structure
 * Append Data Structure
 * Using comment 
-* Diference for Json
 
 ---
 
 ## Define Data Struncture
 
-Data Structure of Yson is String, Number, Bool, List, Object.
+Data Structure of Yson is String, Number, Bool, List and Object.
 But we will find to how to append new Data Structure.
 
 ### String
@@ -46,11 +45,9 @@ For example,
 
     {
         1: [1,2,3],
-        [1,2]: [3],
-        [1,2,3]: []
     }
 
-is parsed as `{1: [1, 2, 3], [1, 2]: [3], [1,2,3]: []}`.
+is parsed as `{1:[1,2,3]}`.
 
 ## Using Comment
 
@@ -59,3 +56,5 @@ Comment is very useful however this is not defined in Json.
 In Yson, Comment is defined by user.
 
 Comment is regrex.
+
+How to write is `yson.load(f, reg)`.

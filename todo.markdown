@@ -2,11 +2,6 @@
 
 ---
 
-## Ver 0
-
-* readme
-* document
-
 ## Ver1
 * double quontation in String
 * define (null | None) 
