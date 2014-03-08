@@ -213,9 +213,7 @@ class YJNumber(YJsonItem):  # {{{
 
 
 class YJBool(YJsonItem):  # {{{
-
     """ Boolean format with YJsonItem """
-
     def __init__(self, cond):  # {{{
         self._cond = cond  # }}}
 
@@ -231,6 +229,22 @@ class YJBool(YJsonItem):  # {{{
 
     def __repr__(self):  # {{{
         return 'YJBool<{}>'.format(self._cond)  # }}}#}}}
+
+class YJNull(YJsonItem):    #{{{
+    def get_data(self):#{{{
+        return None#}}}
+
+    def parse_with_next(text):#{{{
+        if text.startswith('null'):
+            return YJNull(), text[len('null'):]
+        elif text.startswith('None'):
+            return YJNull(), text[len('None'):]
+        return None#}}}
+
+    def __repr__(self):#{{{
+        return 'YJNull'#}}}
+
+#}}}
 
 
 class YJList(YJsonItem):  # {{{
@@ -317,7 +331,7 @@ class YJPair(YJsonItem):  # {{{
         return 'YJPair{}'.format({self._key: self._value})  # }}}#}}}
 
 
-class YJObject(YJsonItem):  # todo: until#{{{
+class YJObject(YJsonItem):  #{{{
 
     """ Object format with YJsonItem """
 
@@ -351,13 +365,13 @@ class YJObject(YJsonItem):  # todo: until#{{{
             if text[0] == '}':
                 text = text[1:]
                 break
-        return YJObject(d), text  # }}}#}}}
+        return YJObject(d), text  # }}}
 
     def __repr__(self):  # {{{
         return 'YJObject<{}>'.format(self._d)  # }}}#}}}
 
 
-all_yjitems = (YJString, YJNumber, YJBool, YJList, YJObject)
+all_yjitems = (YJString, YJNumber, YJBool, YJNull, YJList, YJObject)
 
 
 # tests#{{{
@@ -387,7 +401,6 @@ def yjnumber_test():  # {{{
 
     text = '-13.25abc'
     print(YJNumber.parse_with_next(text))  # }}}
-
 
 def yjbool_test():  # {{{
     text = 'Trueabc'
@@ -454,11 +467,16 @@ def dump_test():  # {{{
 
 def parse_test2():  # {{{
     text = '{1:[2,3,4]}'
-    print(load_from_text(text))  # }}}#}}}
+    print(load_from_text(text))  # }}}
 
 def example_test():#{{{
     filename = 'example.yson'
     f = open(filename)
-    print( load(f) )#}}}
+    print( load(f) )#}}}    
 
-example_test()
+def null_test():#{{{
+    text = '{null:[1,2,3], 1:None}'
+    print(load_from_text(text))#}}}
+#}}}
+
+null_test()

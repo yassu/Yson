@@ -31,6 +31,10 @@ For example, 123e4 can not be parsed as Number Data Structure.
 
 Regrex of Bool is `(True|False)`.
 
+### None
+
+Regrex of None is `(None|null)`.
+
 ### List
 
 Regrex of Number is `\[(obj,)*\]`, where obj is other data structure.
