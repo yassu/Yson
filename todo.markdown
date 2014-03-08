@@ -4,6 +4,7 @@
 
 ## Ver 0
 
+* repair space error
 * use comment
 * readme
 * document
@@ -16,3 +17,5 @@
 
 ## Ver2
 * define setting by using file(~/.ysonrc)
+* add Class Object for parsing to new instance
+

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 from base import except_first_spaces, obtain_suitable_comment
-from json import dump   as _json_dump
+from json import dump as _json_dump
 
 
 __all__ = ['load_from_text', 'load']
 
 
-def load_from_text(text, comment_reg=None):
+def load_from_text(text, comment_reg=None):  # {{{
     """
     input : text with YJson format and ignore regrex(called comment)
     output: python buildin structure
@@ -34,30 +34,47 @@ def load_from_text(text, comment_reg=None):
         # print('l: ' + str(l))
         return l
 
-    #  case: Object
+    # case: dict
     if isinstance(obj, dict) is True:
+        d = obj
+        tmp_d = d
+        
+        # keys into buildin object
+        for yjkey in tmp_d:
+            key = obtain_buildin(yjkey)
+            d[key] = obtain_buildin(d[yjkey])
+            del(d[yjkey])
+
+        return d
+
+    #  case: Object
+    if isinstance(obj, YJObject) is True:
         d = obj.get_data()
         for key in d.keys():
             d[key] = obtain_buildin(d[key])
         return d
 
+    print(obj)
+    print(type(obj))    # }}}
 
-def load(f):
+
+def load(f, comment_reg = None):  # {{{
     """
     input: file object with YJson format
     output: python buildin structure
     """
     text = f.read()
-    return load_from_text(text)
+    return load_from_text(text, comment_reg)  # }}}
 
-def dumps(buildin_obj, f, sort_keys=True, indent=4):
+
+def dumps(buildin_obj, f, sort_keys=True, indent=4):  # {{{
     """
     save buildin_obj in f, whcih is file object
     """
-    _json_dump(buildin_obj, f, sort_keys=sort_keys, indent=indent)
+    _json_dump(buildin_obj, f, sort_keys=sort_keys, indent=indent)  # }}}
 
 
-def obtain_buildin(yobj):
+def obtain_buildin(yobj):  # {{{
     yjdata = None
     yjdata = yobj.get_data()
     # print('Building ====== ')
@@ -78,10 +95,10 @@ def obtain_buildin(yobj):
         return q_dict
 
     # print('Last Case')
-    return yjdata
+    return yjdata  # }}}
 
 
-def parse_with_next(text, appendable_objs=[]):
+def parse_with_next(text, appendable_objs=[]):  # {{{
     numbers_obj = tuple(list(all_yjitems) + list(appendable_objs))
 
     defined = False
@@ -95,33 +112,35 @@ def parse_with_next(text, appendable_objs=[]):
     if defined is True:
         return obj, text
     else:
-        return None
+        return None  # }}}
 
-class YJsonItem:
 
-    def get_data(self):
-        """ return data which this object sgin """
+class YJsonItem:    # {{{
+
+    def get_data(self):  # {{{
+        """ return data which this object sgin """  # }}}
 
     @staticmethod
-    def parse_with_next(text):
+    def parse_with_next(text):  # {{{
         """
         return this object which sign first part of text.
         if text do not sign this object perfectly, return None.
-        """
+        """  # }}}
+    # }}}
 
 
-class YJString(YJsonItem):
+class YJString(YJsonItem):  # {{{
 
     """ String format with YJsonItem """
 
-    def __init__(self, text):
-        self._text = text
+    def __init__(self, text):   # {{{
+        self._text = text   # }}}
 
-    def get_data(self):
-        return self._text
+    def get_data(self):  # {{{
+        return self._text   # }}}
 
     @staticmethod
-    def parse_with_next(text):
+    def parse_with_next(text):  # {{{
         # print('str: {}'.format(text))
         if len(text) < 2 or text[0] != '"' or text[1:].find('"') == -1:   # illegal pattern
             return None
@@ -129,24 +148,24 @@ class YJString(YJsonItem):
         sep_ind = 1 + text[1:].find('"')
         obj = YJString('"' + text[:sep_ind + 1])
         text = text[:sep_ind]
-        return obj, text
+        return obj, text    # }}}
 
-    def __repr__(self):
-        return 'YJString<{}>'.format(self._text)
+    def __repr__(self):  # {{{
+        return 'YJString<{}>'.format(self._text)    # }}}#}}}
 
 
-class YJNumber(YJsonItem):
+class YJNumber(YJsonItem):  # {{{
 
     """ Number format widht YJsonItem """
 
-    def __init__(self, num):
-        self._num = num
+    def __init__(self, num):  # {{{
+        self._num = num  # }}}
 
-    def get_data(self):
-        return self._num
+    def get_data(self):  # {{{
+        return self._num  # }}}
 
     @staticmethod
-    def parse_with_next(text):
+    def parse_with_next(text):  # {{{
         numbers = list(map(str, (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)))
         opes = ('+', '-')
 
@@ -190,43 +209,43 @@ class YJNumber(YJsonItem):
         return YJNumber(num), text
 
     def __repr__(self):
-        return 'YJNumber<{}>'.format(self._num)
+        return 'YJNumber<{}>'.format(self._num)  # }}}#}}}
 
 
-class YJBool(YJsonItem):
+class YJBool(YJsonItem):  # {{{
 
     """ Boolean format with YJsonItem """
 
-    def __init__(self, cond):
-        self._cond = cond
+    def __init__(self, cond):  # {{{
+        self._cond = cond  # }}}
 
-    def get_data(self):
-        return self._cond
+    def get_data(self):  # {{{
+        return self._cond  # }}}
 
-    def parse_with_next(text):
+    def parse_with_next(text):  # {{{
         if text.startswith('True'):
             return YJBool(True), text[len('True'):]
         elif text.startswith('False'):
             return YJBool(False), text[len('False'):]
-        return None
+        return None  # }}}
 
-    def __repr__(self):
-        return 'YJBool<{}>'.format(self._cond)
+    def __repr__(self):  # {{{
+        return 'YJBool<{}>'.format(self._cond)  # }}}#}}}
 
 
-class YJList(YJsonItem):
+class YJList(YJsonItem):  # {{{
 
     """ List format with YJsonItem """
 
-    def __init__(self, array):
+    def __init__(self, array):  # {{{
         self._array = list(
-            filter(lambda obj: obj is not None, array))   # remove None member
+            filter(lambda obj: obj is not None, array))   # remove None member#}}}
 
-    def get_data(self):
-        return self._array
+    def get_data(self):  # {{{
+        return self._array  # }}}
 
     @staticmethod
-    def parse_with_next(text):
+    def parse_with_next(text):  # {{{
         array = []
         if text == '':
             return None
@@ -255,26 +274,26 @@ class YJList(YJsonItem):
             if defined is False:
                 break
         # print('ary: {}'.format(text))
-        return YJList(array), text
+        return YJList(array), text  # }}}
 
-    def __repr__(self):
-        return 'YJList<{}>'.format(self._array)
+    def __repr__(self):  # {{{
+        return 'YJList<{}>'.format(self._array)  # }}}#}}}
 
 
-class YJPair(YJsonItem):
+class YJPair(YJsonItem):  # {{{
 
     """
     You shouldn't assginment directly.
     """
 
-    def __init__(self, key, value):
+    def __init__(self, key, value):  # {{{
         self._key = key     # assume that len(self._d) == 1
-        self._value = value
+        self._value = value  # }}}
 
-    def get_data(self):
-        return {self._key: self._value}
+    def get_data(self):  # {{{
+        return {self._key: self._value}  # }}}
 
-    @staticmethod
+    @staticmethod  # {{{
     def parse_with_next(text, appendable_objs=[]):
         text = except_first_spaces(text)
         d = {}
@@ -292,24 +311,24 @@ class YJPair(YJsonItem):
             text, appendable_objs=appendable_objs)
         text = except_first_spaces(text)
 
-        return YJPair(key_obj, value_item), text
+        return YJPair(key_obj, value_item), text  # }}}
 
-    def __repr__(self):
-        return 'YJPair{}'.format({self._key: self._value})
+    def __repr__(self):  # {{{
+        return 'YJPair{}'.format({self._key: self._value})  # }}}#}}}
 
 
-class YJObject(YJsonItem):  # todo: until
+class YJObject(YJsonItem):  # todo: until#{{{
 
     """ Object format with YJsonItem """
 
-    def __init__(self, d):
-        self._d = d
+    def __init__(self, d):  # {{{
+        self._d = d  # }}}
 
-    def get_data(self):
-        return self._d
+    def get_data(self):  # {{{
+        return self._d  # }}}
 
-    @staticmethod
-    def parse_with_next(text):  # todo: without white space(until)
+    @staticmethod  
+    def parse_with_next(text):  #{{{
         if text == '':
             return text
         if text[0] != '{':
@@ -332,17 +351,17 @@ class YJObject(YJsonItem):  # todo: until
             if text[0] == '}':
                 text = text[1:]
                 break
-        return YJObject(d), text
+        return YJObject(d), text  # }}}#}}}
 
-    def __repr__(self):
-        return 'YJObject<{}>'.format(self._d)
+    def __repr__(self):  # {{{
+        return 'YJObject<{}>'.format(self._d)  # }}}#}}}
 
 
 all_yjitems = (YJString, YJNumber, YJBool, YJList, YJObject)
 
 
-# tests
-def yjstring_test():
+# tests#{{{
+def yjstring_test():  # {{{
     print('yjstring test ====== ')
     text = '"abcdef"'
     print('given: {}'.format(text))
@@ -353,10 +372,10 @@ def yjstring_test():
     text = 'abcdef"'
     print('given: {}'.format(text))
     print('YJString.parse_with_next method returns {}.'.format(
-        YJString.parse_with_next(text)))    # -> Error
+        YJString.parse_with_next(text)))    # -> Error#}}}
 
 
-def yjnumber_test():
+def yjnumber_test():  # {{{
     text = '13abc'
     print(YJNumber.parse_with_next(text))
 
@@ -367,10 +386,10 @@ def yjnumber_test():
     print(YJNumber.parse_with_next(text))
 
     text = '-13.25abc'
-    print(YJNumber.parse_with_next(text))
+    print(YJNumber.parse_with_next(text))  # }}}
 
 
-def yjbool_test():
+def yjbool_test():  # {{{
     text = 'Trueabc'
     print(YJBool.parse_with_next(text))
     text = 'Falseabc'
@@ -380,55 +399,66 @@ def yjbool_test():
     text = 'bFalse'
     print(YJBool.parse_with_next(text))
     text = 'condition'
-    print(YJBool.parse_with_next(text))
+    print(YJBool.parse_with_next(text))  # }}}
 
 
-def yjlist_test():
+def yjlist_test():  # {{{
     text = "[123,243,351]"
     print(YJList.parse_with_next(text))
     text = "[123, [243, 234],351, 123]"
     print(YJList.parse_with_next(text))
     text = "[123, [243, 234],351, 123,]"
-    print(YJList.parse_with_next(text))
+    print(YJList.parse_with_next(text))  # }}}
 
 
-def yjpair_test():
+def yjpair_test():  # {{{
     text = '1:2'
     print(YJPair.parse_with_next(text))
     text = '[1, 2, 3]: [[1, 2, 3,], [5, 7, 9,], [11, 13, 15]]'
-    print(YJPair.parse_with_next(text))
+    print(YJPair.parse_with_next(text))  # }}}
 
 
-def yjobj_test():
+def yjobj_test():  # {{{
     text = '{1:2,3:4}'
     print(YJObject.parse_with_next(text))
     text = '{1:2,3:4,7:{5:6,10:7}}'
-    print(YJObject.parse_with_next(text))
+    print(YJObject.parse_with_next(text))  # }}}
 
 
-def parse_with_next_test():
+def parse_with_next_test():  # {{{
     text = '[1,2,3]'
     print(parse_with_next(text))
 
     text = '{1:2, 3:4, 7: {5:6, 10:7}}'
-    print(parse_with_next(text))
+    print(parse_with_next(text))  # }}}
 
 
-def load_from_text_test():
+def load_from_text_test():  # {{{
     text = '[1,2,3]'
     obj = (load_from_text(text))
     print(obj)
     print(obj)
 
     text = '[1,2,3,{4:[5,6]}]'
-    print(load_from_text(text))
+    print(load_from_text(text))  # }}}
 
-def dump_test():
-    text='[1,2,[3,4,5]]'
+
+def dump_test():  # {{{
+    text = '[1,2,[3,4,5]]'
     filename = 'dump.test'
     ydata = load_from_text(text)
     print(ydata)
     with open(filename, 'w') as f:
-        dumps(ydata, f)
+        dumps(ydata, f)  # }}}
 
-dump_test()
+
+def parse_test2():  # {{{
+    text = '{1:[2,3,4]}'
+    print(load_from_text(text))  # }}}#}}}
+
+def example_test():#{{{
+    filename = 'example.yson'
+    f = open(filename)
+    print( load(f) )#}}}
+
+example_test()
