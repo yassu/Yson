@@ -4,8 +4,6 @@
 
 ## Ver 0
 
-* repair space error
-* use comment
 * readme
 * document
 
