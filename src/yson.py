@@ -376,19 +376,6 @@ class YJObject(YJsonItem):
 all_yjitems = (YJString, YJNumber, YJBool, YJNull, YJList, YJObject)
 
 
-def yjbool_test():  
-    text = 'Trueabc'
-    print(YJBool.parse_with_next(text))
-    text = 'Falseabc'
-    print(YJBool.parse_with_next(text))
-    text = 'aTrue'
-    print(YJBool.parse_with_next(text))
-    text = 'bFalse'
-    print(YJBool.parse_with_next(text))
-    text = 'condition'
-    print(YJBool.parse_with_next(text))
-
-
 def yjlist_test():
     text = "[123,243,351]"
     print(YJList.parse_with_next(text))
