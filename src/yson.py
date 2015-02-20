@@ -376,15 +376,6 @@ class YJObject(YJsonItem):
 all_yjitems = (YJString, YJNumber, YJBool, YJNull, YJList, YJObject)
 
 
-def yjlist_test():
-    text = "[123,243,351]"
-    print(YJList.parse_with_next(text))
-    text = "[123, [243, 234],351, 123]"
-    print(YJList.parse_with_next(text))
-    text = "[123, [243, 234],351, 123,]"
-    print(YJList.parse_with_next(text))
-
-
 def yjpair_test():
     text = '1:2'
     print(YJPair.parse_with_next(text))
