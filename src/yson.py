@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from base import except_first_spaces, obtain_suitable_comment
+from base import obtain_suitable_comment
 from json import dump as _json_dump
 
 
@@ -20,7 +20,7 @@ def load_from_text(text, comment_reg=None):
     # print('text: {}'.format(text))
     obj, text = parse_with_next(text)
     obj = obj.get_data()
-    text = except_first_spaces(text)
+    text = text.lstrip()
 
     if '__getitem__' not in dir(obj):   # it is not container
         return obtain_buildin(obj)
@@ -273,7 +273,7 @@ class YJList(YJsonItem):
             return None
         text = text[1:]
         while text != '':
-            text = except_first_spaces(text)
+            text = text.lstrip()
             defined = False
             obj = parse_with_next(text)
             if obj is not None:
@@ -283,7 +283,7 @@ class YJList(YJsonItem):
             if text == '':
                 return YJList(array), ''
 
-            text = except_first_spaces(text)
+            text = text.lstrip()
             if text[0] == ',':
                 text = text[1:]
             if text[0] == ']':
@@ -314,20 +314,20 @@ class YJPair(YJsonItem):
 
     @staticmethod
     def parse_with_next(text, appendable_objs=[]):
-        text = except_first_spaces(text)
+        text = text.lstrip()
         key_obj = parse_with_next(text, appendable_objs=appendable_objs)
         if key_obj is not None:
             key_obj, text = key_obj
 
         if text[0] == ':':
             text = text[1:]
-            text = except_first_spaces(text)
+            text = text.lstrip()
         else:
             return None
 
         value_item, text = parse_with_next(
             text, appendable_objs=appendable_objs)
-        text = except_first_spaces(text)
+        text = text.lstrip()
 
         return YJPair(key_obj, value_item), text
 

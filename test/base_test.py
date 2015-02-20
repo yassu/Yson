@@ -1,11 +1,6 @@
 from sys import path
 path.append('src')
-from base import except_first_spaces, obtain_suitable_comment
-
-
-def except_first_spaces_test():
-    text = '   fnao rqjp r   rjqp '
-    assert(except_first_spaces(text) == 'fnao rqjp r   rjqp ')
+from base import obtain_suitable_comment
 
 
 def obtain_suitable_comment_test():
