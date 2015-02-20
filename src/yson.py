@@ -376,13 +376,6 @@ class YJObject(YJsonItem):
 all_yjitems = (YJString, YJNumber, YJBool, YJNull, YJList, YJObject)
 
 
-def load_from_text_test():
-    text = '[1,2,3]'
-    obj = (load_from_text(text))
-    print(obj)
-
-    text = '[1,2,3,{4:[5,6]}]'
-    print(load_from_text(text))
 
 
 def dump_test():

@@ -99,3 +99,9 @@ class TestNull(object):
     def test_parse_with_next(self):
         print(YJNull.parse_with_next('null'))
         assert(YJNull.parse_with_next('null') == (YJNull(), ''))
+
+def load_from_text_test1():
+    assert(load_from_text('[1, 2, 3]') == [1, 2, 3])
+
+# def load_from_text_test2(): # todo: unitil
+#     assert(load_from_text('[1,2,3,{4:[5,6]}]') == [1, 2, 3, {4: [5, 6]}])
