@@ -126,6 +126,9 @@ class YJsonItem:
         if text do not sign this object perfectly, return None.
         """
 
+    def __hash__(self):
+        return (repr(self.get_data()) + repr(self.__class__)).__hash__()
+
     def __eq__(self, other):
         return isinstance(other, self.__class__) and\
             self.get_data() == other.get_data()

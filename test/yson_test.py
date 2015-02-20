@@ -2,7 +2,7 @@ from sys import path
 path.append('src')
 from yson import (
     YJString, YJNumber, YJBool,
-    YJList, YJNull,  # YJPair, YJObject, YJNull
+    YJList, YJPair, YJObject, YJNull,
     load_from_text)
 from yson import load as _yson_load
 
@@ -27,7 +27,6 @@ class TestYJNumber(object):
 
     def test_parse_with_next2(self):
         assert(YJNumber.parse_with_next('+13abc') == (YJNumber(13), 'abc'))
-            # => Error(todo)
 
     def test_parse_with_next3(self):
         print(YJNumber.parse_with_next('13.25abc'))
@@ -88,30 +87,18 @@ class TestYJList(object):
 class TestYJPair(object):
 
     def test_parse_with_next(self):
-        " todo: with bug"
-        # assert(YJPair.parse_with_next('1:2') == (
-        #     YJPair(YJNumber(1), YJNumber(2))))
+
+        assert(YJPair.parse_with_next('1:2') == (
+            YJPair(YJNumber(1), YJNumber(2)), ''))
 
 
 class TestYJObject(object):
 
     def test_parse_with_next(self):
-        " todo: with bug "
-        # assert(YJObject.parse_with_next('{1: 2, 3: 4}') == (YJObject({
-        #         Number(1): Number(2),
-        #         Number(3): Number(4)})), '')
+        assert(YJObject.parse_with_next('{1: 2, 3: 4}') == (YJObject({
+                YJNumber(1): YJNumber(2),
+                YJNumber(3): YJNumber(4)}), ''))
 
-    def test_parse_with_next2(self):
-        " todo: with bug"
-        # assert(YJObject.parse_with_next('{1:2,3:4,7:{5:6,10:7}}') ==
-        #         (YJObject({
-        #             Number(1): Number(2),
-        #             Number(3): Number(4),
-        #             Number(7): YJObject({
-        #                 Number(5): Number(6),
-        #                 Number(10): Number(7)
-        #                 })
-        #             }), ','))
 
 
 class TestNull(object):
@@ -123,8 +110,8 @@ class TestNull(object):
 def load_from_text_test1():
     assert(load_from_text('[1, 2, 3]') == [1, 2, 3])
 
-# def load_from_text_test2(): # todo: unitil
-#     assert(load_from_text('[1,2,3,{4:[5,6]}]') == [1, 2, 3, {4: [5, 6]}])
+def load_from_text_test2():
+    assert(load_from_text('[1,2,3,{4:[5,6]}]') == [1, 2, 3, {4: [5, 6]}])
 
 
 def example_test():
