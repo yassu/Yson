@@ -116,7 +116,6 @@ class TestYJObject(object):
 class TestNull(object):
 
     def test_parse_with_next(self):
-        print(YJNull.parse_with_next('null'))
         assert(YJNull.parse_with_next('null') == (YJNull(), ''))
 
 

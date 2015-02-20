@@ -10,7 +10,6 @@ def obtain_suitable_comment_test():
         "--\n"
         "-\n")
     reg = '---.*'
-    print(obtain_suitable_comment(text, reg))
     assert(obtain_suitable_comment(text, reg) == (
         "Test  \n"
         " \n"
