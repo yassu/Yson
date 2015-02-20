@@ -15,20 +15,3 @@ def obtain_suitable_comment(text, reg):
     """
     return _sub(reg, ' ', text)
 
-
-### tests
-def except_first_spaces_test():
-    text = '   fnao rqjp r   rjqp '
-    print(except_first_spaces(text))
-
-def obtain_suitable_comment_test():
-    text = """
-    Test --- fnwo
-    --- abc
-    --
-    -
-    """
-    reg='---.*'
-    print(obtain_suitable_comment(text, reg))
-
-
