@@ -411,7 +411,3 @@ def example_test():
     filename = 'example.yson'
     f = open(filename)
     print(load(f))
-
-def null_test():
-    text = '{null:[1,2,3], 1:None}'
-    print(load_from_text(text))
