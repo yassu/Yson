@@ -1,11 +1,12 @@
 from sys import path
 path.append('src')
-from base import *
+from base import except_first_spaces, obtain_suitable_comment
 
 
 def except_first_spaces_test():
     text = '   fnao rqjp r   rjqp '
-    assert(except_first_spaces(text) ==  'fnao rqjp r   rjqp ')
+    assert(except_first_spaces(text) == 'fnao rqjp r   rjqp ')
+
 
 def obtain_suitable_comment_test():
     text = (
@@ -13,11 +14,11 @@ def obtain_suitable_comment_test():
         "--- abc\n"
         "--\n"
         "-\n")
-    reg='---.*'
+    reg = '---.*'
     print(obtain_suitable_comment(text, reg))
     assert(obtain_suitable_comment(text, reg) == (
         "Test  \n"
         " \n"
         "--\n"
         "-\n"
-        ))
+    ))

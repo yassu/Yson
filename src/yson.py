@@ -38,7 +38,7 @@ def load_from_text(text, comment_reg=None):
     if isinstance(obj, dict) is True:
         d = obj
         tmp_d = d
-        
+
         # keys into buildin object
         for yjkey in tmp_d:
             key = obtain_buildin(yjkey)
@@ -58,7 +58,7 @@ def load_from_text(text, comment_reg=None):
     print(type(obj))
 
 
-def load(f, comment_reg = None):
+def load(f, comment_reg=None):
     """
     input: file object with YJson format
     output: python buildin structure
@@ -128,7 +128,8 @@ class YJsonItem:
         """
 
     def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.get_data() == other.get_data()
+        return isinstance(other, self.__class__) and\
+            self.get_data() == other.get_data()
 
 
 class YJString(YJsonItem):
@@ -143,8 +144,8 @@ class YJString(YJsonItem):
 
     @staticmethod
     def parse_with_next(text):
-        # print('str: {}'.format(text))
-        if len(text) < 2 or text[0] != '"' or text[1:].find('"') == -1:   # illegal pattern
+        # case: illegal
+        if len(text) < 2 or text[0] != '"' or text[1:].find('"') == -1:
             return None
 
         sep_ind = 1 + text[1:].find('"')
@@ -215,7 +216,9 @@ class YJNumber(YJsonItem):
 
 
 class YJBool(YJsonItem):
+
     """ Boolean format with YJsonItem """
+
     def __init__(self, cond):
         self._cond = cond
 
@@ -232,7 +235,9 @@ class YJBool(YJsonItem):
     def __repr__(self):
         return 'YJBool<{}>'.format(self._cond)
 
+
 class YJNull(YJsonItem):
+
     def get_data(self):
         return None
 
@@ -245,8 +250,6 @@ class YJNull(YJsonItem):
 
     def __repr__(self):
         return 'YJNull'
-
-
 
 
 class YJList(YJsonItem):
@@ -312,7 +315,6 @@ class YJPair(YJsonItem):
     @staticmethod
     def parse_with_next(text, appendable_objs=[]):
         text = except_first_spaces(text)
-        d = {}
         key_obj = parse_with_next(text, appendable_objs=appendable_objs)
         if key_obj is not None:
             key_obj, text = key_obj
@@ -343,7 +345,7 @@ class YJObject(YJsonItem):
     def get_data(self):
         return self._d
 
-    @staticmethod  
+    @staticmethod
     def parse_with_next(text):
         if text == '':
             return text
