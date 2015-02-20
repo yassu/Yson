@@ -374,14 +374,3 @@ class YJObject(YJsonItem):
 
 
 all_yjitems = (YJString, YJNumber, YJBool, YJNull, YJList, YJObject)
-
-
-
-
-def dump_test():
-    text = '[1,2,[3,4,5]]'
-    filename = 'dump.test'
-    ydata = load_from_text(text)
-    print(ydata)
-    with open(filename, 'w') as f:
-        dumps(ydata, f)
