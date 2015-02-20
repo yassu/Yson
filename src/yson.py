@@ -376,20 +376,6 @@ class YJObject(YJsonItem):
 all_yjitems = (YJString, YJNumber, YJBool, YJNull, YJList, YJObject)
 
 
-def yjpair_test():
-    text = '1:2'
-    print(YJPair.parse_with_next(text))
-    text = '[1, 2, 3]: [[1, 2, 3,], [5, 7, 9,], [11, 13, 15]]'
-    print(YJPair.parse_with_next(text))
-
-
-def yjobj_test():
-    text = '{1:2,3:4}'
-    print(YJObject.parse_with_next(text))
-    text = '{1:2,3:4,7:{5:6,10:7}}'
-    print(YJObject.parse_with_next(text))
-
-
 def parse_with_next_test():
     text = '[1,2,3]'
     print(parse_with_next(text))
@@ -429,5 +415,3 @@ def example_test():
 def null_test():
     text = '{null:[1,2,3], 1:None}'
     print(load_from_text(text))
-
-

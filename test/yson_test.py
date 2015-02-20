@@ -1,6 +1,6 @@
 from sys import path
 path.append('src')
-from yson import YJString, YJNumber, YJBool, YJList
+from yson import YJString, YJNumber, YJBool, YJList, YJPair, YJObject
 
 class TestYJString(object):
     def test_parse_with_next(self):
@@ -69,3 +69,28 @@ class TestYJList(object):
             YJNumber(351), YJNumber(123)
         ]) ,''
             ))
+
+class TestYJPair(object):
+    def test_parse_with_next(self):
+        " todo: with bug"
+        # assert(YJPair.parse_with_next('1:2') == (
+        #     YJPair(YJNumber(1), YJNumber(2))))
+
+class TestYJObject(object):
+    def test_parse_with_next(self):
+        " todo: with bug "
+        assert(YJObject.parse_with_next('{1: 2, 3: 4}') == (YJObject({
+                Number(1): Number(2),
+                Number(3): Number(4)})), '')
+
+    def test_parse_with_next2(self):
+        " todo: with bug"
+        assert(YJObject.parse_with_next('{1:2,3:4,7:{5:6,10:7}}') ==
+                (YJObject({
+                    Number(1): Number(2),
+                    Number(3): Number(4),
+                    Number(7): YJObject({
+                        Number(5): Number(6),
+                        Number(10): Number(7)
+                        })
+                    }), ','))
