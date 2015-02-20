@@ -385,13 +385,3 @@ def dump_test():
     print(ydata)
     with open(filename, 'w') as f:
         dumps(ydata, f)
-
-
-def parse_test2():
-    text = '{1:[2,3,4]}'
-    print(load_from_text(text))
-
-def example_test():
-    filename = 'example.yson'
-    f = open(filename)
-    print(load(f))

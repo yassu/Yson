@@ -1,6 +1,10 @@
 from sys import path
 path.append('src')
-from yson import YJString, YJNumber, YJBool, YJList, YJPair, YJObject, YJNull
+from yson import (
+        YJString, YJNumber, YJBool,
+            YJList, YJPair, YJObject, YJNull,
+        load_from_text)
+from yson import load as _yson_load
 
 class TestYJString(object):
     def test_parse_with_next(self):
@@ -105,3 +109,12 @@ def load_from_text_test1():
 
 # def load_from_text_test2(): # todo: unitil
 #     assert(load_from_text('[1,2,3,{4:[5,6]}]') == [1, 2, 3, {4: [5, 6]}])
+
+def example_test():
+    f = open('example/example.yson')
+    try:
+        assert(_yson_load(f) == [
+            [1, 2, 3], [4, 5, 6],
+            [7, 8, 9], [10, 11, 12]])
+    finally:
+        f.close()
