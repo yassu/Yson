@@ -127,6 +127,9 @@ class YJsonItem:
         if text do not sign this object perfectly, return None.
         """
 
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.get_data() == other.get_data()
+
 
 class YJString(YJsonItem):
 
@@ -373,34 +376,6 @@ class YJObject(YJsonItem):
 all_yjitems = (YJString, YJNumber, YJBool, YJNull, YJList, YJObject)
 
 
-# tests
-def yjstring_test():
-    print('yjstring test ====== ')
-    text = '"abcdef"'
-    print('given: {}'.format(text))
-    print('YJString.parse_with_next method returns {}.'.format(
-        YJString.parse_with_next(text)))
-
-    print('illegal test ===')
-    text = 'abcdef"'
-    print('given: {}'.format(text))
-    print('YJString.parse_with_next method returns {}.'.format(
-        YJString.parse_with_next(text)))    # -> Error
-
-
-def yjnumber_test():
-    text = '13abc'
-    print(YJNumber.parse_with_next(text))
-
-    text = '+13abc'
-    print(YJNumber.parse_with_next(text))
-
-    text = '13.25abc'
-    print(YJNumber.parse_with_next(text))
-
-    text = '-13.25abc'
-    print(YJNumber.parse_with_next(text))
-
 def yjbool_test():  
     text = 'Trueabc'
     print(YJBool.parse_with_next(text))
@@ -468,10 +443,10 @@ def parse_test2():
     text = '{1:[2,3,4]}'
     print(load_from_text(text))
 
-def example_test
+def example_test():
     filename = 'example.yson'
     f = open(filename)
-    print( load(f) )
+    print(load(f))
 
 def null_test():
     text = '{null:[1,2,3], 1:None}'
