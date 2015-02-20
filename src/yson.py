@@ -98,7 +98,7 @@ def obtain_buildin(yobj):
 
 
 def parse_with_next(text, appendable_objs=[]):
-    numbers_obj = tuple(list(all_yjitems) + list(appendable_objs))
+    numbers_obj = tuple(list(ALL_YJITEMS) + list(appendable_objs))
 
     defined = False
     for jitem in numbers_obj:
@@ -345,4 +345,4 @@ class YJObject(YJsonItem):
         return 'YJObject<{}>'.format(self._d)
 
 
-all_yjitems = (YJString, YJNumber, YJBool, YJNull, YJList, YJObject)
+ALL_YJITEMS = (YJString, YJNumber, YJBool, YJNull, YJList, YJObject)
