@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from base import obtain_suitable_comment
 from json import dump as _json_dump
+from re import compile as _re_compile
 
 
 __all__ = ['load_from_text', 'load']
@@ -167,47 +168,18 @@ class YJNumber(YJsonItem):
 
     @staticmethod
     def parse_with_next(text):
-        numbers = list(map(str, (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)))
-        opes = ('+', '-')
-
-        if text == '':
+        num_pat = _re_compile(r'^[+-]?[0-9]+(\.[0-9]*)?')
+        m = num_pat.search(text)
+        if m is None:
             return None
-
-        if text[0] not in numbers + list(opes):
-            return None
-
-        first_ope = False
-        s_ope = ''
-        if text[0] == '+':
-            s_ope = '+'
-            first_ope = True
-        elif text[0] == '-':
-            s_ope = '-'
-            first_ope = True
-
-        if first_ope is '':
-            text = text[1:]
-        # print('num: {}'.format(text))
-
-        int_part = ''
-        while len(text) > 0 and text[0] in numbers:
-            int_part += text[0]
-            text = text[1:]
-
-        if len(text) == 0 or (  # integer
-           text[0] != '.'):
-            num = int(s_ope + int_part)
-            return YJNumber(num), text
-
-        # float
-        text = text[1:]  # remove dot
-        float_part = ''
-        while len(text) > 0 and text[0] in numbers:
-            float_part += text[0]
-            text = text[1:]
-        num = float(s_ope + int_part + '.' + float_part)
-
-        return YJNumber(num), text
+        else:
+            num = text[m.start(): m.end()]
+            end = text[m.end():]
+            if '.' in num:
+                num = YJNumber(float(num))
+            else:
+                num = YJNumber(int(num))
+            return num, end
 
     def __repr__(self):
         return 'YJNumber<{}>'.format(self._num)

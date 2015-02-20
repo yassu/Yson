@@ -25,17 +25,18 @@ class TestYJNumber(object):
         yjnum, next_s = YJNumber.parse_with_next('13abc')
         assert(YJNumber.parse_with_next('13abc') == (YJNumber(13), 'abc'))
 
-    # def test_parse_with_next2(self):
-    #     assert(YJNumber.parse_with_next('+13abc') == (YJNumber(13), 'abc'))
-    #         # => Error(todo)
+    def test_parse_with_next2(self):
+        assert(YJNumber.parse_with_next('+13abc') == (YJNumber(13), 'abc'))
+            # => Error(todo)
 
     def test_parse_with_next3(self):
+        print(YJNumber.parse_with_next('13.25abc'))
         assert(YJNumber.parse_with_next('13.25abc') ==
                (YJNumber(13.25), 'abc'))
 
-    # def test_parse_with_next4(self):
-    #     assert(YJNumber.parse_with_next('-13.25abc') ==
-    #             (YJNumber(-13.25), 'abc'))
+    def test_parse_with_next4(self):
+        assert(YJNumber.parse_with_next('-13.25abc') ==
+                (YJNumber(-13.25), 'abc'))
 
     def test_eq(self):
         assert(YJNumber(13) == YJNumber(13))
