@@ -54,8 +54,6 @@ def load_from_text(text, comment_reg=None):
             d[key] = obtain_buildin(d[key])
         return d
 
-    print(obj)
-    print(type(obj))
 
 
 def load(f, comment_reg=None):
