@@ -376,18 +376,9 @@ class YJObject(YJsonItem):
 all_yjitems = (YJString, YJNumber, YJBool, YJNull, YJList, YJObject)
 
 
-def parse_with_next_test():
-    text = '[1,2,3]'
-    print(parse_with_next(text))
-
-    text = '{1:2, 3:4, 7: {5:6, 10:7}}'
-    print(parse_with_next(text))
-
-
 def load_from_text_test():
     text = '[1,2,3]'
     obj = (load_from_text(text))
-    print(obj)
     print(obj)
 
     text = '[1,2,3,{4:[5,6]}]'
